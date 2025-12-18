@@ -1,0 +1,5 @@
+SPDXVersion: SPDX-2.1
+DataLicense: CC0-1.0
+PackageName: nixos-hetzner
+PackageOriginator: Casey Link <casey@outskirtslabs.com>
+PackageLicenseDeclared: Apache-2.0

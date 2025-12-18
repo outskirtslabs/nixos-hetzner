@@ -1,0 +1,122 @@
+---
+name: Build and Test HCloud Images
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+  merge_group:
+  push:
+    branches: [main]
+
+jobs:
+  nix-checks:
+    name: Basic Nix checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/flake-checker-action@main
+        with:
+          fail-mode: false
+
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          determinate: true
+
+      - uses: DeterminateSystems/flakehub-cache-action@main
+
+      - name: nix flake check
+        run: |
+          nix flake check --all-systems
+
+      - name: check image label
+        run: |
+          label="$(nix eval --raw .#nixosConfigurations.x86_64-linux.config.system.nixos.label)"
+          echo "checking label '$label'..."
+          set -x
+          echo "${label}" | grep -E '^[0-9][0-9]\.[0-9][0-9]\..*';
+
+  build-and-test:
+    name: Build and Smoke Test HCloud Image
+    runs-on: ${{ matrix.system.runner }}
+    environment:
+      ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') &&
+      'production' || '' }}
+
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      matrix:
+        system:
+          - nix-system: x86_64-linux
+            runner: ubuntu-latest
+          - nix-system: aarch64-linux
+            runner: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          determinate: true
+          extra-conf: |
+            extra-system-features = kvm
+
+      - uses: DeterminateSystems/flakehub-cache-action@main
+
+      - name: Build disk image
+        id: build-disk-image
+        run: |
+          nix build -L .#"diskImages.${{ matrix.system.nix-system }}.hetzner"
+
+      - name: Smoke test
+        if: github.event_name == 'merge_group' || github.event_name == 'push'
+        env:
+          HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+        run: |
+          nix run .#smoke-test -- \
+            --image-path ./result/*.img \
+            --architecture ${{ matrix.system.nix-system }} \
+            --run-id "${{ github.run_id }}-${{ github.run_attempt }}"
+
+      - name: Clean up any orphaned resources from this run (on cancel)
+        if: cancelled() && (github.event_name == 'merge_group' ||
+          github.event_name == 'push')
+        env:
+          HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+        run: |
+          nix develop --command hcloud context create dummy --token-from-env
+          nix develop --command hcloud server list -o noheader | \
+            grep "smoke-test-${{ github.run_id }}" | \
+            awk '{print $1}' | \
+            xargs -r -I{} nix develop --command hcloud server delete {} || true
+          nix develop --command hcloud ssh-key list -o noheader | \
+            grep "smoke-test-key-${{ github.run_id }}" | \
+            awk '{print $1}' | \
+            xargs -r -I{} nix develop --command hcloud ssh-key delete {} || true
+
+  cache-dev-environment:
+    name: Cache Nix development environment
+    runs-on: ${{ matrix.system.runner }}
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      matrix:
+        system:
+          - nix-system: x86_64-linux
+            runner: ubuntu-latest
+          - nix-system: aarch64-linux
+            runner: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          determinate: true
+      - uses: DeterminateSystems/flakehub-cache-action@main
+      - run: |
+          nix build .#devShells.${{ matrix.system.nix-system }}.default

@@ -1,6 +1,8 @@
 {
   inputs = {
+    # TODO: switch this back to nixos/nixpkgs once https://github.com/NixOS/nixpkgs/pull/375551 is merged
     nixpkgs.url = "git+https://github.com/ramblurr/nixpkgs?shallow=1&ref=consolidated";
+
     flakelight.url = "github:nix-community/flakelight";
     flakelight.inputs.nixpkgs.follows = "nixpkgs";
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
@@ -9,13 +11,12 @@
   };
 
   outputs =
-    { flakelight, ... }@inputs:
+    { self, flakelight, ... }@inputs:
     flakelight ./. (
-      {
-        lib,
-        config,
-        outputs,
-        ...
+      { lib
+      , config
+      , outputs
+      , ...
       }:
       {
         inherit inputs;
@@ -23,11 +24,21 @@
           "x86_64-linux"
           "aarch64-linux"
         ];
-        devShell.packages =
-          pkgs: with pkgs; [
-            hcloud
-            hcloud-upload-image
-          ];
+
+        withOverlays = [
+          self.overlays.default
+        ];
+
+        packages.hcloud-smoke-test = { callPackage, ... }: callPackage ./smoke_test { };
+
+        devShell = {
+          packages =
+            pkgs: with pkgs; [
+              hcloud
+              hcloud-upload-image
+              hcloud-smoke-test
+            ];
+        };
         nixosConfigurations = lib.genAttrs config.systems (system: {
           inherit system;
           modules = [
@@ -48,8 +59,19 @@
           ];
         });
 
+        apps = {
+          smoke-test = pkgs: {
+            type = "app";
+            program = "${pkgs.hcloud-smoke-test}/bin/hcloud-smoke-test";
+            meta.description = "smoke test hcloud images";
+          };
+        };
+        formatters = pkgs: {
+          "*.py" = "${pkgs.python313Packages.black}/bin/black";
+        };
+
         outputs = {
-          # Update this, and the changelog *and* usage examples in the README, for breaking changes to the AMIs
+          # Update this, and the changelog *and* usage examples in the README, for breaking changes to the Hetzner Cloud image
           epoch = builtins.toString 1;
 
           diskImages = lib.genAttrs config.systems (system: {
