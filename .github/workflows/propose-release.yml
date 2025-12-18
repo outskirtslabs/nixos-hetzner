@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,7 +38,9 @@ jobs:
             exit 1
           fi
 
-      - name: Create release branch
+      - name: Create release branch and PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           BRANCH="release/v${{ inputs.version }}"
 
@@ -52,11 +55,20 @@ jobs:
           git commit -m "Release v${{ inputs.version }}"
           git push origin "$BRANCH"
 
-          # Output PR creation URL
-          echo ""
-          echo "========================================"
-          echo "Release branch created successfully!"
-          echo ""
-          echo "Create the PR here:"
-          echo "https://github.com/${{ github.repository }}/compare/main...${BRANCH}?expand=1&title=Release%20v${{ inputs.version }}"
-          echo "========================================"
+          # Create PR
+          gh pr create \
+            --title "Release v${{ inputs.version }}" \
+            --body "## Release v${{ inputs.version }}
+
+          This PR was automatically created by the release workflow.
+
+          When merged, this will:
+          - Create git tag \`v${{ inputs.version }}\`
+          - Create GitHub release
+          - Publish to FlakeHub
+
+          **Review checklist:**
+          - [ ] Version number is correct
+          - [ ] CI passes
+          - [ ] Ready to release" \
+            --label "release"
