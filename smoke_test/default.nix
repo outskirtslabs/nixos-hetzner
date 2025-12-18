@@ -1,6 +1,8 @@
 { lib
 , python3Packages
-,
+, hcloud-upload-image
+, openssh
+, makeWrapper
 }:
 let
   pyproject = builtins.fromTOML (builtins.readFile ./pyproject.toml);
@@ -47,9 +49,14 @@ let
           version = pyproject.project.version;
           src = ./.;
           pyproject = true;
-          nativeBuildInputs = lib.flatten (map resolvePkgs requires);
+          nativeBuildInputs = lib.flatten (map resolvePkgs requires) ++ [ makeWrapper ];
           propagatedBuildInputs = lib.flatten (map resolvePkgs dependencies);
           passthru.hcloud-smoke-test.pyproject = pyproject;
+
+          postFixup = ''
+            wrapProgram $out/bin/hcloud-smoke-test \
+              --prefix PATH : ${lib.makeBinPath [ hcloud-upload-image openssh ]}
+          '';
         }
       )
       args;
