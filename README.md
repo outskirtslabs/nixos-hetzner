@@ -36,7 +36,8 @@ On both systems, the images have these tools installed:
 
 ## Example
 
-For a detailed example of deploying NixOS systems to [HCloud] using these images, see our [nixos-hetzner-demo] repo.
+For a detailed example of deploying NixOS systems to [HCloud] using these
+images, see our [nixos-hetzner-demo] repo.
 
 ## Changelog
 
