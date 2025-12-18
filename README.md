@@ -1,10 +1,12 @@
 # NixOS with Determinate Nix for Hetzner Cloud
 
+> [!NOTE] This repo was inspired by [Determinate Systems][detsys]'s [repo for
+> AWS AMIs][nixos-amis] This is a proof-of-concept repo maintained by me and not
+> DetSys. I use something like this in prod, so it works, but don't expect this
+> repo to be updated regularly.
+
 This repo makes available NixOS Hetzner Cloud images containing [Determinate
 Nix][det-nix]
-
-This repo was inspired by [Determinate Systems][detsys]'s [repo for AWS
-AMIs][nixos-amis]
 
 Images are available for these systems:
 

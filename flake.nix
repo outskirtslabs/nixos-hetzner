@@ -1,7 +1,8 @@
 {
   inputs = {
+    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1"; # tracks nixpkgs unstable branch
     # TODO: switch this back to nixos/nixpkgs once https://github.com/NixOS/nixpkgs/pull/375551 is merged
-    nixpkgs.url = "git+https://github.com/ramblurr/nixpkgs?shallow=1&ref=consolidated";
+    nixpkgs-mine.url = "git+https://github.com/ramblurr/nixpkgs?shallow=1&ref=consolidated";
 
     flakelight.url = "github:nix-community/flakelight";
     flakelight.inputs.nixpkgs.follows = "nixpkgs";
@@ -29,14 +30,18 @@
           self.overlays.default
         ];
 
-        packages.hcloud-smoke-test = { callPackage, ... }: callPackage ./smoke_test { };
+        packages.hcloud-smoke-test =
+          { callPackage, system, ... }:
+          callPackage ./smoke_test {
+            hcloud-upload-image = inputs.nixpkgs-mine.legacyPackages.${system}.hcloud-upload-image;
+          };
 
         devShell = {
           packages =
             pkgs: with pkgs; [
-              hcloud
-              hcloud-upload-image
               hcloud-smoke-test
+              inputs.nixpkgs-mine.legacyPackages.${pkgs.system}.hcloud
+              inputs.nixpkgs-mine.legacyPackages.${pkgs.system}.hcloud-upload-image
             ];
         };
         nixosConfigurations = lib.genAttrs config.systems (system: {
@@ -44,9 +49,14 @@
           modules = [
             inputs.determinate.nixosModules.default
             (
-              { config, modulesPath, ... }:
+              { config, ... }:
               {
-                imports = [ (modulesPath + "/virtualisation/hcloud-image.nix") ];
+                imports = [ "${inputs.nixpkgs-mine}/nixos/modules/virtualisation/hcloud-image.nix" ];
+                nixpkgs.overlays = [
+                  (final: prev: {
+                    systemd-network-generator-hcloud = inputs.nixpkgs-mine.legacyPackages.${system}.systemd-network-generator-hcloud;
+                  })
+                ];
                 system.nixos.tags = lib.mkForce [ ];
                 assertions = [
                   {

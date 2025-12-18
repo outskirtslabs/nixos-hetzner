@@ -259,6 +259,23 @@
         "type": "github"
       }
     },
+    "nixpkgs-mine": {
+      "locked": {
+        "lastModified": 1766076119,
+        "narHash": "sha256-w2/pmnhNT0yAkQOYDR9bmoy9Vv00pvB+lYm+emQeMx4=",
+        "ref": "consolidated",
+        "rev": "0d9ecf3e5159e16538113aace5d1c050e3920902",
+        "shallow": true,
+        "type": "git",
+        "url": "https://github.com/ramblurr/nixpkgs"
+      },
+      "original": {
+        "ref": "consolidated",
+        "shallow": true,
+        "type": "git",
+        "url": "https://github.com/ramblurr/nixpkgs"
+      }
+    },
     "nixpkgs-regression": {
       "locked": {
         "lastModified": 1643052045,
@@ -305,19 +322,16 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1766076119,
-        "narHash": "sha256-w2/pmnhNT0yAkQOYDR9bmoy9Vv00pvB+lYm+emQeMx4=",
-        "ref": "consolidated",
-        "rev": "0d9ecf3e5159e16538113aace5d1c050e3920902",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/ramblurr/nixpkgs"
+        "lastModified": 1765779637,
+        "narHash": "sha256-KJ2wa/BLSrTqDjbfyNx70ov/HdgNBCBBSQP3BIzKnv4=",
+        "rev": "1306659b587dc277866c7b69eb97e5f07864d8c4",
+        "revCount": 912002,
+        "type": "tarball",
+        "url": "https://api.flakehub.com/f/pinned/NixOS/nixpkgs/0.1.912002%2Brev-1306659b587dc277866c7b69eb97e5f07864d8c4/019b2463-7b8e-7042-8b7e-490d08a3cd7a/source.tar.gz"
       },
       "original": {
-        "ref": "consolidated",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/ramblurr/nixpkgs"
+        "type": "tarball",
+        "url": "https://flakehub.com/f/NixOS/nixpkgs/0.1"
       }
     },
     "root": {
@@ -326,7 +340,8 @@
         "fh": "fh",
         "flake-schemas": "flake-schemas",
         "flakelight": "flakelight",
-        "nixpkgs": "nixpkgs_4"
+        "nixpkgs": "nixpkgs_4",
+        "nixpkgs-mine": "nixpkgs-mine"
       }
     },
     "rust-analyzer-src": {
