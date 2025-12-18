@@ -16,10 +16,8 @@ from hcloud.servers import Server
 from hcloud.ssh_keys import SSHKey
 
 ARCH_TO_HCLOUD_ARCH = {
-    "x86_64": "x86",
-    "aarch64": "arm",
-    "x86": "x86",
-    "arm": "arm",
+    "x86_64-linux": "x86",
+    "aarch64-linux": "arm",
 }
 
 ARCH_TO_SERVER_TYPE = {
@@ -321,7 +319,7 @@ def main() -> None:
     parser.add_argument(
         "--architecture",
         required=True,
-        choices=["x86_64", "aarch64", "x86", "arm"],
+        choices=["x86_64-linux", "aarch64-linux"],
         help="CPU architecture of the image",
     )
     parser.add_argument(
