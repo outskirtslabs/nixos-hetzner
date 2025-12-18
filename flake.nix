@@ -49,9 +49,13 @@
           modules = [
             inputs.determinate.nixosModules.default
             (
-              { config, ... }:
+              { config, pkgs, ... }:
               {
                 imports = [ "${inputs.nixpkgs-mine}/nixos/modules/virtualisation/hcloud-image.nix" ];
+                environment.systemPackages = [
+                  inputs.fh.packages.${system}.default
+                  pkgs.git
+                ];
                 nixpkgs.overlays = [
                   (final: prev: {
                     systemd-network-generator-hcloud = inputs.nixpkgs-mine.legacyPackages.${system}.systemd-network-generator-hcloud;
