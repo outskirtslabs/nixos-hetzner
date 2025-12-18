@@ -162,6 +162,26 @@
         "url": "https://flakehub.com/f/DeterminateSystems/flake-schemas/0.1.5"
       }
     },
+    "flakelight": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1765803403,
+        "narHash": "sha256-4dB2fDOKJZz3gnoD+VDGI+c4Ztud9rC5kqVG/XyhNvA=",
+        "owner": "nix-community",
+        "repo": "flakelight",
+        "rev": "c10ecde0869fbcb4c99e298e86756c207feff432",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "flakelight",
+        "type": "github"
+      }
+    },
     "git-hooks-nix": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -305,6 +325,7 @@
         "determinate": "determinate",
         "fh": "fh",
         "flake-schemas": "flake-schemas",
+        "flakelight": "flakelight",
         "nixpkgs": "nixpkgs_4"
       }
     },
