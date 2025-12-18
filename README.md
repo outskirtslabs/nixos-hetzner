@@ -6,14 +6,12 @@ Nix][det-nix]
 This repo was inspired by [Determinate Systems][detsys]'s [repo for AWS
 AMIs][nixos-amis]
 
-AMIs are available for these systems:
+Images are available for these systems:
 
-| System      | Nix system name |
-| :---------- | :-------------- |
-| AMD64 Linux | `x86_64-linux`  |
-| ARM64 Linux | `aarch64-linux` |
+- `x86_64-linux`
+- `aarch64-linux`
 
-On both systems, the AMIs have these tools installed:
+On both systems, the images have these tools installed:
 
 - [Determinate Nix][det-nix], Determinate Systems' validated and secure [Nix]
   distribution for enterprises. This includes [Determinate Nixd][dnixd], a
@@ -38,8 +36,7 @@ On both systems, the AMIs have these tools installed:
 
 ## Example
 
-For a detailed example of deploying NixOS systems to [HCloud] using the
-Determinate Nix AMIs, see our [demo] repo.
+For a detailed example of deploying NixOS systems to [HCloud] using these images, see our [nixos-hetzner-demo] repo.
 
 ## Changelog
 
@@ -56,7 +53,7 @@ You can use the NixOS images for [HCloud] in a [OpenTofu] configuration like
 this:
 
 ```hcl
-...
+...TODO...
 ```
 
 ## License: Apache License 2.0
@@ -67,7 +64,7 @@ Distributed under the [Apache-2.0](https://spdx.org/licenses/Apache-2.0.html).
 
 [fh-apply-nixos]: https://docs.determinate.systems/flakehub/cli#apply-nixos
 [cache]: https://docs.determinate.systems/flakehub/cache
-[demo]: https://github.com/outskirtslabs/nixos-hetzner-demo
+[nixos-hetzner-demo]: https://github.com/outskirtslabs/nixos-hetzner-demo
 [det-nix]: https://docs.determinate.systems/determinate-nix
 [detsys]: https://determinate.systems
 [dnixd]: https://docs.determinate.systems/determinate-nix#determinate-nixd
