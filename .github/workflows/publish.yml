@@ -85,7 +85,7 @@ jobs:
           nix run .#smoke-test -- \
             --image-path ./result/*.img \
             --architecture ${{ matrix.system.nix-system }} \
-            --run-id "${{ github.run_id }}-${{ github.run_attempt }}"
+            --run-id "${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.system.nix-system }}"
 
       - name: Clean up any orphaned resources from this run (on cancel)
         if:
@@ -96,11 +96,11 @@ jobs:
         run: |
           nix develop --command hcloud context create dummy --token-from-env
           nix develop --command hcloud server list -o noheader | \
-            grep "smoke-test-${{ github.run_id }}" | \
+            grep "smoke-test-${{ github.run_id }}-.*-${{ matrix.system.nix-system }}" | \
             awk '{print $1}' | \
             xargs -r -I{} nix develop --command hcloud server delete {} || true
           nix develop --command hcloud ssh-key list -o noheader | \
-            grep "smoke-test-key-${{ github.run_id }}" | \
+            grep "smoke-test-key-${{ github.run_id }}-.*-${{ matrix.system.nix-system }}" | \
             awk '{print $1}' | \
             xargs -r -I{} nix develop --command hcloud ssh-key delete {} || true
 
