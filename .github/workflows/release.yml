@@ -1,0 +1,74 @@
+---
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".release-version"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read version from release file
+        id: version
+        run: |
+          if [[ ! -f .release-version ]]; then
+            echo "Error: .release-version file not found"
+            exit 1
+          fi
+          VERSION=$(cat .release-version)
+          if ! echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "Error: Invalid version format in .release-version: $VERSION"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Check tag doesn't exist
+        run: |
+          if git rev-parse "v${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+            echo "Error: Tag v${{ steps.version.outputs.version }} already exists"
+            exit 1
+          fi
+
+      - name: Create tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v${{ steps.version.outputs.version }}" -m "Release v${{ steps.version.outputs.version }}"
+          git push origin "v${{ steps.version.outputs.version }}"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "v${{ steps.version.outputs.version }}" \
+            --title "v${{ steps.version.outputs.version }}" \
+            --generate-notes
+
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          determinate: true
+
+      - name: Publish to FlakeHub
+        uses: DeterminateSystems/flakehub-push@main
+        with:
+          tag: "v${{ steps.version.outputs.version }}"
+          rolling: false
+          visibility: public
+
+      - name: Clean up release marker
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git rm .release-version
+          git commit -m "chore: remove release marker after v${{ steps.version.outputs.version }}"
+          git push origin main

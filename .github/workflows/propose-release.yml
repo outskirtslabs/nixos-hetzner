@@ -1,11 +1,11 @@
 ---
-name: Release
+name: Propose Release
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to release (e.g., 0.0.1)"
+        description: "Version to release (e.g., 0.0.3)"
         type: string
         required: true
 
@@ -14,11 +14,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  release:
+  propose-release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      id-token: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,7 +27,7 @@ jobs:
       - name: Validate version format
         run: |
           if ! echo "${{ inputs.version }}" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
-            echo "Error: Version must be in format X.Y.Z (e.g., 0.0.1)"
+            echo "Error: Version must be in format X.Y.Z (e.g., 0.0.3)"
             exit 1
           fi
 
@@ -38,28 +38,37 @@ jobs:
             exit 1
           fi
 
-      - name: Create tag
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag -a "v${{ inputs.version }}" -m "Release v${{ inputs.version }}"
-          git push origin "v${{ inputs.version }}"
-
-      - name: Create GitHub Release
+      - name: Create release branch and PR
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "v${{ inputs.version }}" \
-            --title "v${{ inputs.version }}" \
-            --generate-notes
+          BRANCH="release/v${{ inputs.version }}"
 
-      - uses: DeterminateSystems/nix-installer-action@main
-        with:
-          determinate: true
+          # Create and push branch
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
 
-      - name: Publish to FlakeHub
-        uses: DeterminateSystems/flakehub-push@main
-        with:
-          tag: "v${{ inputs.version }}"
-          rolling: false
-          visibility: public
+          # Create a release marker file (will be used by release workflow)
+          echo "${{ inputs.version }}" > .release-version
+          git add .release-version
+          git commit -m "Release v${{ inputs.version }}"
+          git push origin "$BRANCH"
+
+          # Create PR
+          gh pr create \
+            --title "Release v${{ inputs.version }}" \
+            --body "## Release v${{ inputs.version }}
+
+          This PR was automatically created by the release workflow.
+
+          When merged, this will:
+          - Create git tag \`v${{ inputs.version }}\`
+          - Create GitHub release
+          - Publish to FlakeHub
+
+          **Review checklist:**
+          - [ ] Version number is correct
+          - [ ] CI passes
+          - [ ] Ready to release" \
+            --label "release"
