@@ -5,3 +5,4 @@ tmp/
 .direnv/
 *.pyc
 extra/
+result

@@ -26,6 +26,22 @@ ARCH_TO_SERVER_TYPE = {
 }
 
 
+def sanitize_resource_name(name: str) -> str:
+    """Sanitize a string for use in Hetzner Cloud resource names.
+
+    Hetzner Cloud only allows lowercase letters, numbers, and hyphens.
+    """
+    # Replace underscores with hyphens
+    name = name.replace("_", "-")
+    # Remove any other invalid characters
+    name = re.sub(r"[^a-z0-9-]", "", name.lower())
+    # Collapse multiple hyphens
+    name = re.sub(r"-+", "-", name)
+    # Remove leading/trailing hyphens
+    name = name.strip("-")
+    return name
+
+
 def upload_image(
     image_path: Path,
     architecture: str,
@@ -207,7 +223,7 @@ def smoke_test(
     # Default is 120 with exponential backoff, which can timeout too quickly
     client = Client(token=token, poll_interval=2.0, poll_max_retries=300)
 
-    resource_suffix = run_id or str(int(time.time()))
+    resource_suffix = sanitize_resource_name(run_id or str(int(time.time())))
     server_name = f"smoke-test-{resource_suffix}"
     ssh_key_name = f"smoke-test-key-{resource_suffix}"
 
