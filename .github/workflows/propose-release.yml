@@ -1,13 +1,11 @@
 ---
-name: Propose Release
+name: Release
 
 on:
   workflow_dispatch:
     inputs:
-      reference-id:
-        type: string
-        required: true
       version:
+        description: "Version to release (e.g., 0.0.1)"
         type: string
         required: true
 
@@ -16,12 +14,40 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  propose-release:
-    uses: DeterminateSystems/propose-release/.github/workflows/workflow.yml@main
+  release:
+    runs-on: ubuntu-latest
     permissions:
-      id-token: "write"
-      contents: "write"
-      pull-requests: write
-    with:
-      reference-id: ${{ inputs.reference-id }}
-      version: ${{ inputs.version }}
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate version format
+        run: |
+          if ! echo "${{ inputs.version }}" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "Error: Version must be in format X.Y.Z (e.g., 0.0.1)"
+            exit 1
+          fi
+
+      - name: Check tag doesn't exist
+        run: |
+          if git rev-parse "v${{ inputs.version }}" >/dev/null 2>&1; then
+            echo "Error: Tag v${{ inputs.version }} already exists"
+            exit 1
+          fi
+
+      - name: Create tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v${{ inputs.version }}" -m "Release v${{ inputs.version }}"
+          git push origin "v${{ inputs.version }}"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "v${{ inputs.version }}" \
+            --title "v${{ inputs.version }}" \
+            --generate-notes
