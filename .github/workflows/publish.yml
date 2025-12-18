@@ -6,9 +6,13 @@ permissions:
 
 on:
   pull_request:
+    paths-ignore:
+      - "**.md"
   merge_group:
   push:
     branches: [main]
+    paths-ignore:
+      - "**.md"
 
 jobs:
   nix-checks:
