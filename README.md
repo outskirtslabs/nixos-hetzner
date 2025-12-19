@@ -1,13 +1,30 @@
 # NixOS with Determinate Nix for Hetzner Cloud
 
-> [!NOTE]
-> This repo was inspired by [Determinate Systems][detsys]'s [repo for
-> AWS AMIs][nixos-amis] This is a proof-of-concept repo maintained by me and not
-> DetSys. I use something like this in prod, so it works, but don't expect this
-> repo to be updated regularly.
+Hetzner is a price-competitive and conceptually simpler alternative to AWS and the other hyperscalers for the small orgs and teams that [I tend to work with][ol].
 
-This repo makes available NixOS Hetzner Cloud images containing [Determinate
-Nix][det-nix]
+Using NixOS on Hetzner has traditionally been a bear, because Hetzner does not provide a NixOS image nor a straightforward way to create one.
+Most folks resort to using nixos-infect, nixos-anywhere to transmogrify a debian/ubuntu instance into NixOS.
+
+However several developments over the past year have changed the status quo:
+
+1. [hcloud-upload-image] was released, a simple golang tool that takes a disk image as input and sideffects Hetzner Cloud in such a way that it creates a Snapshot from said image
+2. [PR #375551](https://github.com/NixOS/nixpkgs/pull/375551) is making its way into nixpkgs which brings in `hcloud-upload-image` as well as the NixOS plumbing needed to produce hetzner images.
+3. [FlakeHub Cache], available since late 2024, makes it *blazing* fast to copy built closures into a running system.
+
+To be clear: I was not responsible for any of this.
+I'm taking advantage of the open-source efforts of others.
+This repo takes these disparate pieces and ties them together into an out-of-the-box solution for building Hetzner Cloud NixOS images.
+
+(and yes, even this repo is a derivative as I based it on [Determinate Systems][detsys]'s [repo for AWS AMIs][nixos-amis])
+
+---
+
+> [!NOTE]
+> This is a proof-of-concept repo maintained by me and not DetSys.
+> I use something like this in prod, so what is here works, however
+> don't count on me to provide the same maintenance and upkeep like DetSys does for their official AWS AMIs.
+
+This repo makes available NixOS Hetzner Cloud images containing [Determinate Nix][det-nix]
 
 Images are available for these systems:
 
@@ -90,6 +107,7 @@ Distributed under the [Apache-2.0](https://spdx.org/licenses/Apache-2.0.html).
 [fh]: https://docs.determinate.systems/flakehub/cli
 [fh-apply]: https://docs.determinate.systems/flakehub/cli#apply
 [flakehub]: https://flakehub.com
+[flakehub cache]: https://flakehub.com/cache
 [nix]: https://docs.determinate.systems/determinate-nix
 [nixos]: https://zero-to-nix.com/concepts/nixos
 [opentofu]: https://opentofu.org
@@ -97,3 +115,5 @@ Distributed under the [Apache-2.0](https://spdx.org/licenses/Apache-2.0.html).
 [opentofu]: https://opentofu.org
 [nixos-amis]: https://github.com/DeterminateSystems/nixos-amis
 [new-token]: https://docs.hetzner.com/cloud/api/getting-started/generating-api-token/
+[ol]: https://outskirtslabs.com
+[hcloud-upload-image]: https://github.com/apricote/hcloud-upload-image
