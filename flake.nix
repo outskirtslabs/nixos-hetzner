@@ -58,7 +58,8 @@
                 ];
                 nixpkgs.overlays = [
                   (final: prev: {
-                    systemd-network-generator-hcloud = inputs.nixpkgs-mine.legacyPackages.${system}.systemd-network-generator-hcloud;
+                    systemd-network-generator-hcloud =
+                      inputs.nixpkgs-mine.legacyPackages.${system}.systemd-network-generator-hcloud;
                   })
                 ];
                 system.nixos.tags = lib.mkForce [ ];
@@ -82,6 +83,7 @@
         };
         formatters = pkgs: {
           "*.py" = "${pkgs.python313Packages.black}/bin/black";
+          "*.md" = "";
         };
 
         outputs = {

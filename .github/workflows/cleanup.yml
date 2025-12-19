@@ -8,7 +8,7 @@ on:
 
 jobs:
   cleanup:
-    name: Clean up old servers
+    name: Clean up old resources
     runs-on: ubuntu-latest
     environment: production
     permissions:
@@ -23,27 +23,9 @@ jobs:
 
       - uses: DeterminateSystems/flakehub-cache-action@main
 
-      - name: Delete servers older than 2 hours
+      - name: Run cleanup script
         env:
           HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
         run: |
           nix develop --command hcloud context create dummy --token-from-env
-
-          cutoff=$(date -u -d '2 hours ago' +%s)
-          echo "Cutoff timestamp: $cutoff ($(date -u -d @$cutoff))"
-
-          nix develop --command hcloud server list -o json | jq -c '.[]' | while read -r server; do
-            id=$(echo "$server" | jq -r '.id')
-            name=$(echo "$server" | jq -r '.name')
-            created=$(echo "$server" | jq -r '.created')
-            created_ts=$(date -u -d "$created" +%s)
-
-            if [[ "$created_ts" -lt "$cutoff" ]]; then
-              echo "Deleting server $name (id=$id, created=$created)"
-              nix develop --command hcloud server delete "$id" || true
-            else
-              echo "Keeping server $name (id=$id, created=$created) - not old enough"
-            fi
-          done
-
-          echo "Cleanup complete"
+          nix develop --command bash scripts/cleanup.sh

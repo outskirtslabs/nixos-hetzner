@@ -1,6 +1,7 @@
 # NixOS with Determinate Nix for Hetzner Cloud
 
-> [!NOTE] This repo was inspired by [Determinate Systems][detsys]'s [repo for
+> [!NOTE]
+> This repo was inspired by [Determinate Systems][detsys]'s [repo for
 > AWS AMIs][nixos-amis] This is a proof-of-concept repo maintained by me and not
 > DetSys. I use something like this in prod, so it works, but don't expect this
 > repo to be updated regularly.
@@ -41,23 +42,36 @@ On both systems, the images have these tools installed:
 For a detailed example of deploying NixOS systems to [HCloud] using these
 images, see our [nixos-hetzner-demo] repo.
 
+Here's a simple way to get started:
+
+1. [Generate a Hetzner Cloud token][new-token]
+2. Build and upload:
+
+  ```
+  HCLOUD_TOKEN=...set an hcloud token.. see
+  ARCH=x86_64-linux
+  HCLOUD_ARCH="x86"
+
+  # or
+  # ARCH=aarch64-linux
+  # HCLOUD_ARCH="arm"
+  nix build "github:outskirtslabs/nixos-hetzner#diskImages.$ARCH.hetzner" --print-build-logs
+
+  # inspect the image
+  ls result/*
+  IMAGE_PATH=$(ls result/*.img 2>/dev/null | head -1)
+
+  # upload to hetzner cloud
+  hcloud-upload-image upload \
+      --image-path="$IMAGE_PATH" \
+    --architecture="$HCLOUD_ARCH" \
+    --description="nixos-hetzner image"
+  ```
+
 ## Changelog
 
 -> [CHANGELOG.md](./CHANGELOG.md)
 
-## Deployment
-
-You can deploy [HCloud] instances based on the Determinate Nix images using a
-variety of tools, such as [Opentofu](#opentofu).
-
-### OpenTofu
-
-You can use the NixOS images for [HCloud] in a [OpenTofu] configuration like
-this:
-
-```hcl
-...TODO...
-```
 
 ## License: Apache License 2.0
 
@@ -82,3 +96,4 @@ Distributed under the [Apache-2.0](https://spdx.org/licenses/Apache-2.0.html).
 [private-flakes]: https://docs.determinate.systems/flakehub/private-flakes
 [opentofu]: https://opentofu.org
 [nixos-amis]: https://github.com/DeterminateSystems/nixos-amis
+[new-token]: https://docs.hetzner.com/cloud/api/getting-started/generating-api-token/
