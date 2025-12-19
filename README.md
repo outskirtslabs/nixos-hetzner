@@ -39,7 +39,7 @@ On both systems, the images have these tools installed:
 
 ## Example
 
-For a detailed example of deploying NixOS systems to [HCloud] using these
+For a detailed example of deploying NixOS systems to Hetzner Cloud using these
 images, see our [nixos-hetzner-demo] repo.
 
 Here's a simple way to get started:
@@ -47,7 +47,7 @@ Here's a simple way to get started:
 1. [Generate a Hetzner Cloud token][new-token]
 2. Build and upload:
 
-  ```
+  ```bash
   HCLOUD_TOKEN=...set an hcloud token.. see
   ARCH=x86_64-linux
   HCLOUD_ARCH="x86"
