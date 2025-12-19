@@ -48,11 +48,10 @@ jobs:
   build-and-test:
     name: Build and Smoke Test HCloud Image
     runs-on: ${{ matrix.system.runner }}
-    if: !contains(github.event.head_commit.message , 'no-deploy')
-    environment:
-      ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') &&
-      'production' || '' }}
-
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/main' &&
+      !contains(github.event.head_commit.message , 'no-deploy'))
+    environment: production
     permissions:
       contents: read
       id-token: write
@@ -89,7 +88,8 @@ jobs:
             --run-id "${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.system.nix-system }}"
 
       - name: Clean up any orphaned resources from this run (on cancel)
-        if: cancelled() && (github.event_name == 'merge_group' ||
+        if:
+          cancelled() && (github.event_name == 'merge_group' ||
           github.event_name == 'push')
         env:
           HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
