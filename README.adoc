@@ -1,5 +1,3 @@
-= NixOS with Determinate Nix for Hetzner Cloud
-
 Hetzner is a price-competitive and conceptually simpler alternative to
 AWS and the other hyperscalers for the small orgs and teams that
 https://outskirtslabs.com[I tend to work with].
