@@ -65,7 +65,7 @@ Here's a simple way to get started:
 2. Build and upload:
 
   ```bash
-  HCLOUD_TOKEN=...set an hcloud token.. see
+  HCLOUD_TOKEN=...your hcloud token...
   ARCH=x86_64-linux
   HCLOUD_ARCH="x86"
 
