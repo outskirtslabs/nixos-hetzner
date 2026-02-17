@@ -1,0 +1,17 @@
+{:manifest/version 1,
+ :project
+ {:id "nixos-hetzner",
+  :coord "outskirtslabs/nixos-hetzner",
+  :description "Hetzner Cloud Images with NixOS and DetSys nix",
+  :license "Apache-2.0",
+  :platforms [:nix :linux],
+  :status :static,
+  :created "2025-12-18",
+  :version "0.0.0"},
+ :docs
+ {:component "nixos-hetzner",
+  :title "nixos-hetzner",
+  :version "next",
+  :prerelease true,
+  :start-path "doc"},
+ :repo {:url "https://github.com/outskirtslabs/nixos-hetzner"}}

@@ -1,0 +1,8 @@
+= nixos-hetzner
+
+Hetzner Cloud Images with NixOS and DetSys nix.
+
+This project builds NixOS disk images for Hetzner Cloud with Determinate Nix preinstalled.
+
+* Source repository: https://github.com/outskirtslabs/nixos-hetzner
+* Changelog: https://github.com/outskirtslabs/nixos-hetzner/blob/main/CHANGELOG.md
