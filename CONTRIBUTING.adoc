@@ -1,0 +1,56 @@
+= Contributing
+
+Contributions are more than welcome!
+
+For organization-wide expectations, see
+https://docs.outskirtslabs.com/contributing-guide[Outskirts Labs Contributing Guide].
+
+A Nix devshell is available, which includes all development
+dependencies, for contributing to nixos-hetzner.
+
+Enter this shell with:
+
+[source,sh]
+----
+nix develop
+----
+
+If you use https://direnv.net/[`direnv`], just run `direnv allow` and
+you will be dropped in this devShell.
+
+== Building
+
+[source,bash]
+----
+# Build a disk image to ./result/
+nix build #diskImages.x86_64-linux.hetzner
+
+# Set your HCLOUD_TOKEN
+# ref: https://docs.hetzner.com/cloud/api/getting-started/generating-api-token/
+export HCLOUD_TOKEN=..
+
+nix run #.apps.x86_64-linux.smoke-test -- --image-path result/nixos-image*img --architecture x86_64
+nix run #.apps.x86_64-linux.smoke-test -- --image-path result/nixos-image*img --architecture x86_64 --keep-image-on-failure --debug
+----
+
+== Code quality
+
+[source,bash]
+----
+# Run the formatters
+nix fmt
+
+# Run the linters
+nix flake check --print-build-logs
+----
+
+== Releasing
+
+Releases are automated via Github Actions. Every detsys nix release
+results in a new image.
+
+Git tags and Github release use the tag of the Determinate Nix version
+used in the VM.
+
+However, we use the `epoch` value to indicate breaking changes to the
+Hetzner Cloud image NixOS configuration.

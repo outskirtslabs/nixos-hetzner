@@ -1,3 +1,11 @@
+____
+Hetzner Cloud images with NixOS and Determinate Nix.
+____
+
+http://docs.outskirtslabs.com/nixos-hetzner/next/[image:https://img.shields.io/badge/doc-outskirtslabs-orange.svg[doc]]
+http://docs.outskirtslabs.com/open-source-vital-signs#static[image:https://img.shields.io/badge/status-static-blue.svg[status:
+static]]
+
 Hetzner is a price-competitive and conceptually simpler alternative to
 AWS and the other hyperscalers for the small orgs and teams that
 https://outskirtslabs.com[I tend to work with].
@@ -81,6 +89,9 @@ determinate-nixd login token --token-file <path to token>
 fh apply nixos "my-org/my-flake/*#nixosConfigurations.my-nixos-configuration-output"
 ----
 
+Project status:
+*http://docs.outskirtslabs.com/open-source-vital-signs#static[Static]*.
+
 == Example
 
 For a detailed example of deploying NixOS systems to Hetzner Cloud using
@@ -117,9 +128,16 @@ hcloud-upload-image upload \
   --description="nixos-hetzner image"
 ----
 
+== Documentation
+
+* http://docs.outskirtslabs.com/nixos-hetzner/next/[Docs]
+* http://docs.outskirtslabs.com/nixos-hetzner/next/api[API Reference]
+* https://github.com/outskirtslabs/nixos-hetzner/issues[Support via
+GitHub Issues]
+
 == Changelog
 
--++>++ link:./CHANGELOG.md[CHANGELOG.md]
+-++>++ link:./CHANGELOG.adoc[CHANGELOG.adoc]
 
 [[license-apache-license-20]]
 == License: Apache License 2.0

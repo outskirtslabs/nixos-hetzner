@@ -1,5 +1,10 @@
 # NixOS with Determinate Nix for Hetzner Cloud
 
+> Hetzner Cloud images with NixOS and Determinate Nix.
+
+[![doc](https://img.shields.io/badge/doc-outskirtslabs-orange.svg)](http://docs.outskirtslabs.com/nixos-hetzner/next/)
+[![status: static](https://img.shields.io/badge/status-static-blue.svg)](http://docs.outskirtslabs.com/open-source-vital-signs#static)
+
 Hetzner is a price-competitive and conceptually simpler alternative to AWS and the other hyperscalers for the small orgs and teams that [I tend to work with][ol].
 
 Using NixOS on Hetzner has traditionally been a bear, because Hetzner does not provide a NixOS image nor a straightforward way to create one.
@@ -54,6 +59,8 @@ On both systems, the images have these tools installed:
   fh apply nixos "my-org/my-flake/*#nixosConfigurations.my-nixos-configuration-output"
   ```
 
+Project status: **[Static](http://docs.outskirtslabs.com/open-source-vital-signs#static)**.
+
 ## Example
 
 For a detailed example of deploying NixOS systems to Hetzner Cloud using these
@@ -85,9 +92,15 @@ Here's a simple way to get started:
     --description="nixos-hetzner image"
   ```
 
+## Documentation
+
+- [Docs](http://docs.outskirtslabs.com/nixos-hetzner/next/)
+- [API Reference](http://docs.outskirtslabs.com/nixos-hetzner/next/api)
+- [Support via GitHub Issues](https://github.com/outskirtslabs/nixos-hetzner/issues)
+
 ## Changelog
 
--> [CHANGELOG.md](./CHANGELOG.md)
+-> [CHANGELOG.adoc](./CHANGELOG.adoc)
 
 
 ## License: Apache License 2.0

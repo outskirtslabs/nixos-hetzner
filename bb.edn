@@ -1,12 +1,15 @@
 {:tasks
  {:requires ([babashka.tasks :refer [shell]])
   sync-readme
-  {:doc "Convert README.md to AsciiDoc and sync it to Antora index.adoc."
+  {:doc "Convert README.md to AsciiDoc and sync docs into Antora pages."
    :task (do
            (shell "pandoc -f gfm -t asciidoc --shift-heading-level-by=-1 README.md -o README.adoc")
            (shell "mkdir -p doc/modules/ROOT/pages")
            (shell "bash" "-lc"
-                  "title=$(sed -n 's/^# //p' README.md | head -1); { printf '= %s\\n\\n' \"$title\"; cat README.adoc; } > doc/modules/ROOT/pages/index.adoc"))}
+                  "title=$(sed -n 's/^# //p' README.md | head -1); { printf '= %s\\n\\n' \"$title\"; cat README.adoc; } > doc/modules/ROOT/pages/index.adoc")
+           (shell "bash" "-lc" "[ -f CHANGELOG.adoc ] && cp CHANGELOG.adoc doc/modules/ROOT/pages/changelog.adoc || true")
+           (shell "bash" "-lc" "[ -f CONTRIBUTING.adoc ] && cp CONTRIBUTING.adoc doc/modules/ROOT/pages/contributing.adoc || true")
+           (shell "bash" "-lc" "[ -f SECURITY.adoc ] && cp SECURITY.adoc doc/modules/ROOT/pages/security.adoc || true"))}
   gen-docs
   {:doc "Generate docs required by Antora."
    :depends [sync-readme]}}}
