@@ -7,3 +7,4 @@ tmp/
 extra/
 result
 .env
+*.md
