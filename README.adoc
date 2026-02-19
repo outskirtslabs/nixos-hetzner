@@ -3,8 +3,8 @@ ____
 Hetzner Cloud images with NixOS and Determinate Nix.
 ____
 
-http://docs.outskirtslabs.com/nixos-hetzner/next/[image:https://img.shields.io/badge/doc-outskirtslabs-orange.svg[doc]]
-http://docs.outskirtslabs.com/open-source-vital-signs#static[image:https://img.shields.io/badge/status-static-blue.svg[status:
+https://docs.outskirtslabs.com/nixos-hetzner/next/[image:https://img.shields.io/badge/doc-outskirtslabs-orange.svg[doc]]
+https://docs.outskirtslabs.com/open-source-vital-signs#static[image:https://img.shields.io/badge/status-static-blue.svg[status:
 static]]
 
 Hetzner is a price-competitive and conceptually simpler alternative to
@@ -91,7 +91,7 @@ fh apply nixos "my-org/my-flake/*#nixosConfigurations.my-nixos-configuration-out
 ----
 
 Project status:
-*http://docs.outskirtslabs.com/open-source-vital-signs#static[Static]*.
+*https://docs.outskirtslabs.com/open-source-vital-signs#static[Static]*.
 
 == Example
 
@@ -131,8 +131,8 @@ hcloud-upload-image upload \
 
 == Documentation
 
-* http://docs.outskirtslabs.com/nixos-hetzner/next/[Docs]
-* http://docs.outskirtslabs.com/nixos-hetzner/next/api[API Reference]
+* https://docs.outskirtslabs.com/nixos-hetzner/next/[Docs]
+* https://docs.outskirtslabs.com/nixos-hetzner/next/api[API Reference]
 * https://github.com/outskirtslabs/nixos-hetzner/issues[Support via
 GitHub Issues]
 
