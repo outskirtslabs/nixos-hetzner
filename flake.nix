@@ -1,8 +1,6 @@
 {
   inputs = {
     nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1"; # tracks nixpkgs unstable branch
-    # TODO: switch this back to nixos/nixpkgs once https://github.com/NixOS/nixpkgs/pull/375551 is merged
-    nixpkgs-mine.url = "git+https://github.com/ramblurr/nixpkgs?shallow=1&ref=consolidated";
 
     flakelight.url = "github:nix-community/flakelight";
     flakelight.inputs.nixpkgs.follows = "nixpkgs";
@@ -33,15 +31,15 @@
         packages.hcloud-smoke-test =
           { callPackage, system, ... }:
           callPackage ./smoke_test {
-            hcloud-upload-image = inputs.nixpkgs-mine.legacyPackages.${system}.hcloud-upload-image;
+            hcloud-upload-image = inputs.nixpkgs.legacyPackages.${system}.hcloud-upload-image;
           };
 
         devShell = {
           packages =
             pkgs: with pkgs; [
               hcloud-smoke-test
-              inputs.nixpkgs-mine.legacyPackages.${pkgs.system}.hcloud
-              inputs.nixpkgs-mine.legacyPackages.${pkgs.system}.hcloud-upload-image
+              hcloud
+              hcloud-upload-image
             ];
         };
         nixosConfigurations = lib.genAttrs config.systems (system: {
@@ -51,15 +49,14 @@
             (
               { config, pkgs, ... }:
               {
-                imports = [ "${inputs.nixpkgs-mine}/nixos/modules/virtualisation/hcloud-image.nix" ];
+                imports = [ ./nixos/modules/virtualisation/hcloud-image.nix ];
                 environment.systemPackages = [
                   inputs.fh.packages.${system}.default
                   pkgs.git
                 ];
                 nixpkgs.overlays = [
                   (final: prev: {
-                    systemd-network-generator-hcloud =
-                      inputs.nixpkgs-mine.legacyPackages.${system}.systemd-network-generator-hcloud;
+                    systemd-network-generator-hcloud = final.callPackage ./pkgs/systemd-network-generator-hcloud/package.nix { };
                   })
                 ];
                 system.nixos.tags = lib.mkForce [ ];
