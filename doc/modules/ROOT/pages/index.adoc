@@ -6,6 +6,7 @@ ____
 https://docs.outskirtslabs.com/nixos-hetzner/next/[image:https://img.shields.io/badge/doc-outskirtslabs-orange.svg[doc]]
 https://docs.outskirtslabs.com/open-source-vital-signs#static[image:https://img.shields.io/badge/status-static-blue.svg[status:
 static]]
+image:https://ci.outskirtslabs.com/repos/github/outskirtslabs/nixos-hetzner/badge.svg[alt=nixbot,link=https://ci.outskirtslabs.com/repos/github/outskirtslabs/nixos-hetzner]
 
 Hetzner is a price-competitive and conceptually simpler alternative to
 AWS and the other hyperscalers for the small orgs and teams that
